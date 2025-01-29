@@ -4,30 +4,39 @@ const AppSettings = (props) => {
   const [config, setConfig] = useState({
     ipInfoApi: props.apiKeys.ipInfoApi,
     deepSeekApi: props.apiKeys.deepSeekApi,
+    adzunaApiId: props.apiKeys.adzunaApiId,
+    adzunaApiKey: props.apiKeys.adzunaApiKey,
     country: props.country,
   });
 
   const handleInputChange = (event) => {
     setConfig((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     props.setCountry(config.country);
     props.setApiKeys({
       ipInfoApi: config.ipInfoApi,
       deepSeekApi: config.deepSeekApi,
+      adzunaApiId: config.adzunaApiId,
+      adzunaApiKey: config.adzunaApiKey,
     });
   };
+
   const findDefaultKeys = (event) => {
     event.preventDefault();
-    for (const [key, value] of Object.entries(props.defaultKeys)) {
-      if (value) {
-        setConfig((prev) => ({ ...prev, [key]: value }));
-      } else {
-        setConfig((prev) => ({ ...prev, [key]: "KEY NOT FOUND" }));
-      }
-    }
+    setConfig(prev => ({
+      ...prev,
+      ...Object.fromEntries(
+        Object.entries(props.defaultKeys).map(([key, value]) => [
+          key, 
+          value || "KEY NOT FOUND"
+        ])
+      )
+    }));
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="country">Select Country</label>
@@ -43,27 +52,33 @@ const AppSettings = (props) => {
           </option>
         ))}
       </select>
+      
       <div>
-        <label htmlFor="ipInfoApi">IP Info Key:</label>
-        <input
-          id="ipInfoApi"
-          name="ipInfoApi"
-          value={config.ipInfoApi}
-          onChange={handleInputChange}
-        ></input>
-        <label htmlFor="deepSeekApi">Deepseek AI API Key:</label>
-        <input
-          id="deepSeekApi"
-          name="deepSeekApi"
-          value={config.deepSeekApi}
-          onChange={handleInputChange}
-        ></input>
-        <button onClick={findDefaultKeys}>
-          Use Default Keys(if available)
+        <ul>
+          {Object.entries(config).map(([key, value]) => {
+            if (key === "country") return null;
+            return (
+              <li key={key}>
+                <label htmlFor={key}>{key}:</label>
+                <input
+                  id={key}
+                  name={key}
+                  value={value}
+                  onChange={handleInputChange}
+                />
+              </li>
+            );
+          })}
+        </ul>
+        
+        <button onClick={findDefaultKeys} type="button">
+          Use Default Keys (if available)
         </button>
       </div>
+      
       <button type="submit">Confirm</button>
     </form>
   );
 };
+
 export default AppSettings;

@@ -4,6 +4,7 @@ import "./App.css";
 import Navbar from "./Components/Navbar/Navbar";
 import LocationPopup from "./Components/LocationPopup/LocationPopup";
 import AppSettings from "./Components/AppSettings/AppSettings";
+import Search from "./Components/Search/Search";
 
 function App() {
   const countries = [
@@ -28,17 +29,26 @@ function App() {
     { code: "za", name: "South Africa" },
   ];
   const [country, setCountry] = useState("");
-  const [apiKeys, setApiKeys] = useState({ ipInfoApi: "", deepSeekApi: "" });
-  const defaultKeys = {ipInfoApi:import.meta.env.VITE_APP_IPINFO_TOKEN,deepSeekApi:import.meta.env.VITE_APP_DEEPSEEK_KEY};
+  const [apiKeys, setApiKeys] = useState({
+    ipInfoApi: "",
+    deepSeekApi: "",
+    adzunaApiId: "",
+    adzunaApiKey: "",
+  });
+  const defaultKeys = {
+    ipInfoApi: import.meta.env.VITE_APP_IPINFO_TOKEN,
+    deepSeekApi: import.meta.env.VITE_APP_DEEPSEEK_KEY,
+    adzunaApiId: import.meta.env.VITE_APP_ADZUNA_ID,
+    adzunaApiKey: import.meta.env.VITE_APP_ADZUNA_KEY,
+  };
   return (
     <>
       <Navbar country={country} />
       {/*<LocationPopup setCountry={setCountry} apiKey={apiKeys.ipInfoApi} countries={countries}/>*/}
       <div className="content-container">
         <Routes>
-          <Route path="/home" element={<LocationPopup setCountry={setCountry} apiKey={apiKeys.ipInfoApi} countries={countries}/>}/>
-          {/*<Route path='/home' element={<Home/>}/>
-          <Route path='/search' element={<Search/>}/>*/}
+          {/*<Route path='/home' element={<Home/>}/>*/}
+          <Route path='/search' element={<Search apiKeys={apiKeys} country={country}/>}/>
           <Route
             path="/settings"
             element={
@@ -46,7 +56,7 @@ function App() {
                 apiKeys={apiKeys}
                 setApiKeys={setApiKeys}
                 countries={countries}
-                country = {country}
+                country={country}
                 setCountry={setCountry}
                 defaultKeys={defaultKeys}
               />
