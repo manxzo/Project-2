@@ -39,3 +39,6 @@ export const fetchSearchResults = async (
   return response.data;
 };
 
+export const fetchAiResponse = async =>{
+
+}
