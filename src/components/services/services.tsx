@@ -23,8 +23,11 @@ export const fetchSearchResults = async (
 ) => {
   const url = `${AdzunaURL}/${country}/search/${page}`;
   const filteredParams = Object.fromEntries(
-    Object.entries(params).filter(([key , value]) => value !== "" && value !== 0 && value !== null && value[0] !== false));
-  
+    Object.entries(params).filter(
+      ([key, value]) =>
+        value !== "" && value !== 0 && value !== null && value[0] !== false
+    )
+  );
 
   const response = await axios.get(url, {
     params: {
@@ -39,6 +42,44 @@ export const fetchSearchResults = async (
   return response.data;
 };
 
-export const fetchAiResponse = async =>{
+import axios from "axios";
 
-}
+export const fetchAiResponse = async (job,resume,deepseekApiKey) => {
+  const response = await axios.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      model: "deepseek/deepseek-r1:free",
+      messages: [
+        {
+          role: "user",
+          content: `You are an expert in Applicant Tracking Systems (ATS) and resume optimization. 
+          Your task is to rewrite and enhance a resume to increase its chances of passing ATS filters by incorporating relevant keywords, skills, and formatting best practices.
+          ### Instructions:
+          - Extract important skills, technologies, and keywords from the job posting.
+          - Naturally integrate these keywords into the resume without keyword stuffing.
+          - Ensure the resume follows ATS-friendly formatting (no tables, images, or fancy formatting).
+          - Use action verbs and quantify achievements where possible.
+          - Improve job titles, descriptions, and bullet points to align with the job posting.
+
+          ### Job Posting:
+          ${job}
+
+          ### Candidate Resume:
+          ${resume}
+
+          ### Output Format:
+          1. **Optimized Resume:** (Plain text, ready for ATS submission)
+          2. **List of Added/Improved ATS Keywords**`,
+        },
+      ],
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${deepseekApiKey}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return response.data;
+};
