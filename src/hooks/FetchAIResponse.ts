@@ -9,7 +9,8 @@ const useAiResponse = (job,resume,deepseekApiKey) => {
     const getResponse = async () => {
       try {
         const data = await fetchAiResponse(job,resume,deepseekApiKey);
-        setResponse(data.results);
+        setResponse(data.data);
+        console.log(response)
       } catch (err) {
         console.error(err.message);
         setError(err.message);
@@ -17,6 +18,7 @@ const useAiResponse = (job,resume,deepseekApiKey) => {
     };
 
     getResponse();
+    
   }, [job,resume, deepseekApiKey]);
 
   return { response , error };
