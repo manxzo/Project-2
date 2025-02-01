@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import axios from "axios";
 import qs from "qs";
 const AdzunaURL = "https://api.adzuna.com/v1/api/jobs";
@@ -41,8 +41,6 @@ export const fetchSearchResults = async (
 
   return response.data;
 };
-
-import axios from "axios";
 
 export const fetchAiResponse = async (job,resume,deepseekApiKey) => {
   const response = await axios.post(
