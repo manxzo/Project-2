@@ -79,5 +79,5 @@ export const fetchAiResponse = async (job,resume,deepseekApiKey) => {
     }
   );
 
-  return response.data;
+  return response;
 };
