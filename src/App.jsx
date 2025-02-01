@@ -6,6 +6,7 @@ import LocationPopup from "./Components/LocationPopup/LocationPopup";
 import AppSettings from "./Components/AppSettings/AppSettings";
 import Search from "./Components/Search/Search";
 
+
 function App() {
   const countries = [
     { code: "gb", name: "United Kingdom" },
@@ -28,12 +29,12 @@ function App() {
     { code: "sg", name: "Singapore" },
     { code: "za", name: "South Africa" },
   ];
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("sg");
   const [apiKeys, setApiKeys] = useState({
-    ipInfoApi: "",
-    deepSeekApi: "",
-    adzunaApiId: "",
-    adzunaApiKey: "",
+    ipInfoApi: import.meta.env.VITE_APP_IPINFO_TOKEN,
+    deepSeekApi: import.meta.env.VITE_APP_DEEPSEEK_KEY,
+    adzunaApiId: import.meta.env.VITE_APP_ADZUNA_ID,
+    adzunaApiKey: import.meta.env.VITE_APP_ADZUNA_KEY,
   });
   const defaultKeys = {
     ipInfoApi: import.meta.env.VITE_APP_IPINFO_TOKEN,
@@ -41,6 +42,7 @@ function App() {
     adzunaApiId: import.meta.env.VITE_APP_ADZUNA_ID,
     adzunaApiKey: import.meta.env.VITE_APP_ADZUNA_KEY,
   };
+ 
   return (
     <>
       <Navbar country={country} />
