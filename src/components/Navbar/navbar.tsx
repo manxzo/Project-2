@@ -14,8 +14,7 @@ import { GithubIcon } from "@/components/icons";
 export const Navbar = () => {
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" isBordered>
-      <NavbarContent className="basis-1/5 sm:basis-full " justify="center">
-        <div className="hidden 2xl:flex gap-20 justify-evenly  ml-2">
+      <NavbarContent className="basis-1/5 sm:basis-full gap-20" justify="center">
           {siteConfig.navItems.map((item) => (
               <NavbarItem key={item.href}>
                 <Link
@@ -35,7 +34,7 @@ export const Navbar = () => {
               </NavbarItem>
             
           ))}
-        </div>
+        
 
         <NavbarItem>
           <LocationPopup />
