@@ -9,8 +9,8 @@ const obj = {
   adref:
     "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiMzQ4MTA3ODM3NCIsInMiOiJlUGUteWtMaDd4R2VZZjZaMkhBLW9BIn0.gH35bHELi3GPWxeBSCtKTd-nf1Xj9DfAXYhQ4N6VMPk",
   category: {
-    label: "Hospitality & Catering Jobs",
-    tag: "hospitality-catering-jobs",
+    label: "Hospitality & Catering resumes",
+    tag: "hospitality-catering-resumes",
     __CLASS__: "Adzuna::API::Response::Category",
   },
   description:
@@ -18,7 +18,7 @@ const obj = {
   title: "Catering Specialist / Driver",
   redirect_url:
     "https://www.adzuna.sg/details/3481078374?utm_medium=api&utm_source=054e2057",
-  __CLASS__: "Adzuna::API::Response::Job",
+  __CLASS__: "Adzuna::API::Response::resume",
   company: {
     display_name: "Grain",
     __CLASS__: "Adzuna::API::Response::Company",
@@ -26,4 +26,23 @@ const obj = {
   id: "3481078374",
   salary_is_predicted: "0",
 };
-const {description,title,id,salary_is_predicted,} = obj
+
+
+const saveResume = (resume: Resume) => {
+    setConfig((prev) => {
+      const isAlreadySaved = prev.saved.resumes.some(
+        (savedResume) => savedResume.id === resume.id
+      );
+  
+      if (!isAlreadyFavorited) {
+        return {
+          ...prev,
+          saved: {
+            ...prev.saved,
+            resumes: [...prev.saved.resumes, resume],
+          },
+        };
+      }
+      return prev;
+    });
+  };
