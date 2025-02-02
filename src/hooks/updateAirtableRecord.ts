@@ -2,8 +2,10 @@ import { editDataInAirtable } from "@/components/services/services";
 import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
 
-
-const useUpdateAirtableData = (airtableLabel,recordId, updatedFields) => {
+/**
+ * Custom Hook to update a record in Airtable.
+ */
+const useUpdateAirtableData = (airtableLabel) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -13,7 +15,7 @@ const useUpdateAirtableData = (airtableLabel,recordId, updatedFields) => {
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
-  const updateData = async () => {
+  const updateData = async (recordId, updatedFields) => {
     if (!airtableBase || !airtableKey || !airtableLabel || !recordId) {
       setError("Missing Airtable credentials, label, or record ID.");
       return;

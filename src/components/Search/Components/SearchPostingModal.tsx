@@ -12,11 +12,10 @@ import {
 } from "@heroui/react";
 import { HeartFilledIcon, SearchIcon } from "@/components/icons";
 import { useState } from "react";
+import usePostAirtableData from "@/hooks/addAirtableRecord";
 
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
-const [favorited,setFavourited] = useState([]);
-const [favorite,setFavourite] = useState(null);
-
+const {success,loading,error,postData} = usePostAirtableData()
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
@@ -47,16 +46,26 @@ const [favorite,setFavourite] = useState(null);
           <div className="flex gap-2">
             <Popover showArrow offset={20} placement="bottom">
               <PopoverTrigger>
-                <Button color="success" aria-label="Use in Resume" isIconOnly><SearchIcon/></Button>
+                <Button color="success" aria-label="Use in Resume" isIconOnly>
+                  <SearchIcon />
+                </Button>
               </PopoverTrigger>
               <PopoverContent>
-               <Snippet ><pre className="whitespace-pre-wrap break-words">{JSON.stringify(selectedJob)}</pre></Snippet>
+                <Snippet>
+                  <pre className="whitespace-pre-wrap break-words">
+                    {JSON.stringify(selectedJob)}
+                  </pre>
+                </Snippet>
               </PopoverContent>
             </Popover>
-
-            <Button color="danger" aria-label="Add to Favourites" isIconOnly>
-              <HeartFilledIcon />
-            </Button>
+                <Button
+                  color="danger"
+                  aria-label="Add to Favourites"
+                  onPress={handleFavourite}
+                  isIconOnly
+                >
+                  <HeartFilledIcon />
+                </Button>
             <Button color="primary" onPress={() => onClose(false)}>
               Close
             </Button>
