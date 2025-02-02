@@ -16,9 +16,13 @@ import {  useState } from "react";
 import usePostAirtableData from "@/hooks/addAirtableRecord";
 import { ConfigContext } from "@/config";
 import { useContext } from "react";
+import useDeleteAirtableData from "@/hooks/deleteAirtableRecord";
+
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const context = useContext(ConfigContext);
+  const {isJobSaved,findJobRecordId} = context;
   const { loading, error, postData } = usePostAirtableData("Jobs");
+  const {deleteData} = useDeleteAirtableData("Jobs");
 
   const newJob = {
     title: selectedJob?.title,
@@ -31,6 +35,7 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
     date_posted:selectedJob?.created
   };
   const handleSave = () => {
+    isJobSaved(newJob)?deleteData(findJobRecordId(newJob)):postData(newJob);
 };
 
   return (
@@ -74,18 +79,18 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
                 </Snippet>
               </PopoverContent>
             </Popover>
-            <Popover onOpenChange={handleFav}>
+            <Popover onOpenChange={handleSave}>
               <PopoverTrigger>
                 <Button
-                  color="danger"
-                  aria-label="Add to Favourites"
+                  color={isJobSaved(newJob)?"success":"danger"}
+                  aria-label={isJobSaved(newJob)?"Job Saved!":"Press to Save Job!"}
                   isIconOnly
                 >
                   <HeartFilledIcon />
                 </Button>
               </PopoverTrigger>
               <PopoverContent>
-                {loading ? <Spinner color="danger" /> : <pre>${message}</pre>}
+                {loading ? <Spinner color="danger" /> : <pre>{isJobSaved(newJob)?"Job Saved!":"Job Unsaved!"}</pre>}
               </PopoverContent>
             </Popover>
 
