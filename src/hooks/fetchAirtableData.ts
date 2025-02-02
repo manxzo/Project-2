@@ -8,7 +8,7 @@ const useGetAirtableData = (airtableLabel) => {
   const [error, setError] = useState(null);
 
   const context = useContext(ConfigContext);
-  const { config } = context;
+  const { config,syncData } = context;
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
@@ -26,6 +26,7 @@ const useGetAirtableData = (airtableLabel) => {
           airtableKey
         );
         setData(fetchedData.records);
+        syncData(airtableLabel,fetchedData.records);
       } catch (err) {
         console.error("Error fetching Airtable data:", err.message);
         setError(err.message);

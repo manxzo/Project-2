@@ -8,7 +8,7 @@ const usePostAirtableData = (airtableLabel) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const context = useContext(ConfigContext);
-  const { config,addJobRecord,addResumeRecord } = context;
+  const { config,addJobRecord,addResumeRecord,saveJob,saveResume } = context;
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
   const postData = async (newRecord) => {
@@ -23,6 +23,7 @@ const usePostAirtableData = (airtableLabel) => {
     try {
     const recordId =  await postDataToAirtable(airtableBase, airtableLabel, airtableKey, newRecord);
       airtableLabel==="Jobs"?addJobRecord(newRecord,recordId):addResumeRecord(newRecord,recordId);
+      airtableLabel==="Jobs"?saveJob(newRecord):saveResume(newRecord)
       setSuccess(true);
     } catch (err) {
       console.error("Error posting to Airtable:", err.message);
