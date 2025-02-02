@@ -31,7 +31,8 @@ const Search = () => {
   const { results, resultCount, error } = useSearchResults(params, page);
   return (
     <DefaultLayout>
-      <SearchFilter handleSearch={handleSearch} />
+      <div className="w-full">
+        <SearchFilter handleSearch={handleSearch} />
       <div className="flex-col justify-items-center">
         <SearchPagination
           page={page}
@@ -41,6 +42,8 @@ const Search = () => {
         />
         <SearchResult results={results} resultCount={resultCount} />
       </div>
+      </div>
+      
     </DefaultLayout>
   );
 };

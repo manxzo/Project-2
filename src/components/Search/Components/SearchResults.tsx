@@ -27,7 +27,7 @@ const SearchResult = ({ results, resultCount }) => {
     return (
       <div>
         <h4>Total Number of Results: {resultCount}</h4>
-        <div className="gap-2 grid grid-cols-4 sm:grid-cols-5 ">
+        <div className="gap-2 grid grid-cols-4 sm:grid-cols-4 ">
           {results.map((posting) => (
             <Card
               className="border-2 bg-background-100/50 dark:bg-default-100/50 max-w-[610px] h-[180px] p-3"

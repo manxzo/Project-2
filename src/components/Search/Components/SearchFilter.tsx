@@ -50,7 +50,7 @@ const SearchFilter = ({ handleSearch }) => {
     console.log(JSON.stringify(filter));
   };
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} >
       <Input
         name="what"
         label="Search Keywords"
