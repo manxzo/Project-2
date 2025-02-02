@@ -3,16 +3,15 @@ import { fetchSearchResults } from "@/components/services/services";
 import { ConfigContext } from "@/config";
 import { useContext } from "react";
 
-
-const useSearchResults = (params,page ) => {
+const useSearchResults = (params, page) => {
   const [results, setResults] = useState([]);
   const [resultCount, setResultCount] = useState(0);
   const [error, setError] = useState(null);
   const context = useContext(ConfigContext);
-  const {config} = context;
-  const {apiKeys} = config;
-  const {adzunaApiId,adzunaApiKey} = apiKeys;
-  const {country} = config;
+  const { config } = context;
+  const { apiKeys } = config;
+  const { adzunaApiId, adzunaApiKey } = apiKeys;
+  const { country } = config;
   useEffect(() => {
     if (!params) return;
 
@@ -31,10 +30,10 @@ const useSearchResults = (params,page ) => {
         console.error(err.message);
         setError(err.message);
       }
-    }
+    };
     loadResults();
-  }, [params,country,page,adzunaApiId,adzunaApiKey]);
-  console.log(JSON.stringify(results))
+  }, [params, country, page, adzunaApiId, adzunaApiKey]);
+  console.log(JSON.stringify(results));
   return { results, resultCount, error };
 };
 
