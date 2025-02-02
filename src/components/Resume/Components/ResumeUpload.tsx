@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import pdfToText from "react-pdftotext";
-import { Button, Input } from "@heroui/react";
+import { Button, Input,Textarea } from "@heroui/react";
 const ResumeUploader = ({ setResume }) => {
   const [resumeText, setResumeText] = useState("");
   const [file, setFile] = useState();
@@ -36,39 +36,23 @@ const ResumeUploader = ({ setResume }) => {
     setResume(resumeText);
   };
   return (
-    <div className="flex-col content-stretch flex-auto h-full">
-      <div className="flex gap-2 border p-3 h-1/8">
-        <Input
-          type="file"
-          accept=".pdf"
-          onChange={handleFileChange}
-          className="flex-2"
-          color="secondary"
-        />
-        <Button
-          className=" flex-1 self-center"
-          color="primary"
-          type="button"
-          onPress={handleClear}
-        >
-          Clear
-        </Button>
-      </div>
-      <div className="h-3/4">
-        <textarea
-          color="default"
-          value={resumeText}
-          onChange={(event) => setResumeText(event.target.value)}
-          placeholder="Paste or edit resume text here..."
-          className="h-full w-full p-4 border rounded-md dark:text-white dark:border-gray-600 placeholder-gray-400 "
-        />
-      </div>
-      <div className="flex gap-2 border p-3 h-1/8">
-        <Button color="success" onPress={handleSubmit} className="w-1/2">
-          Submit
-        </Button>
-      </div>
+    <div className="flex flex-col gap-4">
+
+    <div className="flex gap-2">
+      <Input type="file" accept=".pdf" onChange={handleFileChange} className="w-full" />
+      <Button color="primary" onPress={handleClear}>Clear</Button>
     </div>
+    <Textarea
+      color="default"
+      value={resumeText}
+      placeholder="Paste or edit resume text here..."
+      onChange={(event) => setResumeText(event.target.value)}
+      className="w-full h-60 resize-y p-3 border rounded-md"
+      size="lg"
+    />
+
+    <Button color="success" className="w-full" onPress={handleSubmit}>Get AI Insights</Button>
+  </div>
   );
 };
 
