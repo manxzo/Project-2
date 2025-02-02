@@ -52,6 +52,7 @@ interface ConfigContextType {
   addJobRecord: (job: Job, recordId: string) => void;
   addResumeRecord: (resume: Resume, recordId: string) => void;
   removeRecord: (recordId: string) => void;
+  syncData:(label:string,records:any)=> void;
 }
 
 export const ConfigContext = createContext<ConfigContextType | undefined>(
@@ -165,11 +166,29 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     setConfig((prev) => ({ ...prev, records: [...prev.records, newRecord] }));
   };
   const removeRecord = (recordId: string) => {
+    const recordToRemove = config.records.filter((record) => record.recordId === recordId)[0] 
     const filteredRecords = config.records.filter(
-      (record) => record.id !== recordId
+      (record) => record.recordId !== recordId
     );
+    if(recordToRemove.label==="Jobs"){
+      const jobRmv = config.saved.jobs.filter((job)=>job.id===recordToRemove.id)[0];
+      unsaveJob(jobRmv);
+    }
+    if(recordToRemove.label==="Resumes"){
+      const resumeRmv = config.saved.resumes.filter((resume)=>resume.id===recordToRemove.id)[0];
+      unsaveResume(resumeRmv);
+    }
     setConfig((prev)=>({...prev,records:filteredRecords}))
   };
+  const syncData = (label,records)=>{
+    const newData = records.map((record)=>record.fields)
+    if(label==="Jobs"){
+      setConfig((prev)=>({...prev,...prev.saved,jobs:newData}))
+    }
+    if(label==="Resumes"){
+      setConfig((prev)=>({...prev,...prev.saved,resumes:newData}))
+    }
+  }
   return (
     <ConfigContext.Provider
       value={{
@@ -185,7 +204,8 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
         findResumeRecordId,
         addJobRecord,
         addResumeRecord,
-        removeRecord
+        removeRecord,
+        syncData
       }}
     >
       {children}
