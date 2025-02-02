@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
 
 
-const useDeleteAirtableData = (airtableLabel,recordId) => {
+const useDeleteAirtableData = (airtableLabel) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -13,7 +13,7 @@ const useDeleteAirtableData = (airtableLabel,recordId) => {
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
-  const deleteData = async () => {
+  const deleteData = async (recordId) => {
     if (!airtableBase || !airtableKey || !airtableLabel || !recordId) {
       setError("Missing Airtable credentials, label, or record ID.");
       return;
