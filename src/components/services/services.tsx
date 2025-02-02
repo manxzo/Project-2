@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import qs from "qs";
 const AdzunaURL = "https://api.adzuna.com/v1/api/jobs";
@@ -42,11 +41,11 @@ export const fetchSearchResults = async (
   return response.data;
 };
 
-export const fetchAiResponse = async (job,resume,deepseekApiKey) => {
+export const fetchAiResponse = async (job, resume, deepseekApiKey) => {
   const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      model: "deepseek/deepseek-r1:free",
+      model: "microsoft/phi-4",
       messages: [
         {
           role: "user",
@@ -79,5 +78,71 @@ export const fetchAiResponse = async (job,resume,deepseekApiKey) => {
     }
   );
 
-  return response;
+  return response.data;
+};
+
+export const fetchAirtableData = async (
+  airtableBase,
+  airtableLabel,
+  airtableApiKey
+) => {
+  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
+  const response = await axios.get(url, {
+    headers: { Authorization: `Bearer ${airtableApiKey}` },
+  });
+  return response.data.records;
+};
+
+export const postDataToAirtable = async (
+  airtableBase,
+  airtableLabel,
+  airtableApiKey,
+  newRecord
+) => {
+  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
+  const response = await axios.post(
+    url,
+    { records: [{ fields: newRecord }] },
+    {
+      headers: {
+        Authorization: `Bearer ${airtableApiKey}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const editDataInAirtable = async (
+  airtableBase,
+  airtableLabel,
+  airtableApiKey,
+  recordId,
+  updatedFields
+) => {
+  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
+  const response = await axios.patch(
+    url,
+    { fields: updatedFields },
+    {
+      headers: {
+        Authorization: `Bearer ${airtableApiKey}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const deleteDataFromAirtable = async (
+  airtableBase,
+  airtableLabel,
+  airtableApiKey,
+  recordId
+) => {
+  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
+  const response = await axios.delete(url, {
+    headers: { Authorization: `Bearer ${airtableApiKey}` },
+  });
+  return response.data;
 };
