@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -16,11 +16,6 @@ import useCategories from "@/hooks/FetchCategories";
 import { ConfigContext } from "@/config";
 
 const SearchFilter = ({ handleSearch }) => {
-  const context = useContext(ConfigContext);
-  const { config } = context;
-  const { country, apiKeys } = config;
-  const { adzunaApiId, adzunaApiKey } = apiKeys;
-
   const [filter, setFilter] = useState({
     what: "",
     where: "",
@@ -31,11 +26,7 @@ const SearchFilter = ({ handleSearch }) => {
     salary_max: 0,
     salary_min: 0,
   });
-  const { categories, error } = useCategories(
-    country,
-    adzunaApiId,
-    adzunaApiKey
-  );
+  const { categories, error } = useCategories();
   const [salaryRange, setSalaryRange] = useState([0, 0]);
   const [maxDaysOld, setMaxDaysOld] = useState(0);
   useEffect(() => {
@@ -103,9 +94,8 @@ const SearchFilter = ({ handleSearch }) => {
             </Chip>
           );
         })}
-        
       </div>
-      <div className="flex gap-2 mb-4" style={{width:"100%"}}>
+      <div className="flex gap-2 mb-4" style={{ width: "100%" }}>
         <Popover>
           <PopoverTrigger>
             <Button color="primary">Advanced</Button>
@@ -161,9 +151,9 @@ const SearchFilter = ({ handleSearch }) => {
         >
           Sort By: {filter.sort_by === "date" ? "Date" : "Relevance"}
         </Button>
-          <Button color="success" style={{ flex:"auto" }} type="submit">
-            Search
-          </Button>
+        <Button color="success" style={{ flex: "auto" }} type="submit">
+          Search
+        </Button>
       </div>
     </Form>
   );

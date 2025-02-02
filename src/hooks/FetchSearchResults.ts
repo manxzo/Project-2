@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { fetchSearchResults } from "@/components/services/services";
+import { ConfigContext } from "@/config";
+import { useContext } from "react";
 
 
-
-const useSearchResults = (params, country,page, adzunaApiId, adzunaApiKey) => {
+const useSearchResults = (params,page ) => {
   const [results, setResults] = useState([]);
   const [resultCount, setResultCount] = useState(0);
   const [error, setError] = useState(null);
+  const context = useContext(ConfigContext);
+  const {config} = context;
+  const {apiKeys} = config;
+  const {adzunaApiId,adzunaApiKey} = apiKeys;
+  const {country} = config;
   useEffect(() => {
     if (!params) return;
 

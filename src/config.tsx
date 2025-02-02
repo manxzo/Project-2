@@ -6,6 +6,7 @@ interface Config {
     deepSeekApi: string;
     adzunaApiId: string;
     adzunaApiKey: string;
+    airtableKey:string;
   };
   country: string;
 }
@@ -26,6 +27,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       deepSeekApi: import.meta.env.VITE_APP_DEEPSEEK_KEY,
       adzunaApiId: import.meta.env.VITE_APP_ADZUNA_ID,
       adzunaApiKey: import.meta.env.VITE_APP_ADZUNA_KEY,
+      airtableKey:import.meta.env.VITE_APP_AIRTABLE_KEY
     },
     country: "sg",
   });

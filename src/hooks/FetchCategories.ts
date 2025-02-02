@@ -1,10 +1,15 @@
 import { fetchCategories } from "@/components/services/services";
 import { useEffect, useState } from "react";
-
-const useCategories = (country, adzunaApiId, adzunaApiKey) => {
+import { ConfigContext } from "@/config";
+import { useContext } from "react";
+const useCategories = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
-
+  const context = useContext(ConfigContext);
+  const {config} = context;
+  const {apiKeys} = config;
+  const {adzunaApiId,adzunaApiKey} = apiKeys;
+  const {country} = config
   useEffect(() => {
     const loadCategories = async () => {
       try {
