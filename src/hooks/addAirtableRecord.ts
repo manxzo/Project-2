@@ -21,7 +21,8 @@ const usePostAirtableData = (airtableLabel) => {
     setError(null);
     setSuccess(false);
     try {
-    const recordId =  await postDataToAirtable(airtableBase, airtableLabel, airtableKey, newRecord);
+   const recordId =  await postDataToAirtable(airtableBase, airtableLabel, airtableKey, newRecord);
+  
       airtableLabel==="Jobs"?addJobRecord(newRecord,recordId):addResumeRecord(newRecord,recordId);
       airtableLabel==="Jobs"?saveJob(newRecord):saveResume(newRecord)
       setSuccess(true);

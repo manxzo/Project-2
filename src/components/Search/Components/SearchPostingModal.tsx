@@ -12,17 +12,17 @@ import {
   Spinner,
 } from "@heroui/react";
 import { HeartFilledIcon, SearchIcon } from "@/components/icons";
-import {  useState } from "react";
+import { useState } from "react";
 import usePostAirtableData from "@/hooks/addAirtableRecord";
 import { ConfigContext } from "@/config";
 import { useContext } from "react";
 import useDeleteAirtableData from "@/hooks/deleteAirtableRecord";
-import debounce from "lodash.debounce";
+
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const context = useContext(ConfigContext);
-  const {isJobSaved,findJobRecordId} = context;
-  const { loading, error, postData } = usePostAirtableData("Jobs");
-  const {deleteData} = useDeleteAirtableData("Jobs");
+  const { isJobSaved, findJobRecordId } = context;
+  const { loading, error, success, postData } = usePostAirtableData("Jobs");
+  const { deleteData,loading:loadingDel } = useDeleteAirtableData("Jobs");
 
   const newJob = {
     title: selectedJob?.title,
@@ -30,14 +30,17 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
     description: selectedJob?.description,
     id: selectedJob?.id,
     location: selectedJob?.location?.display_name,
-    min_salary:selectedJob?.salary_min,
-    max_salary:selectedJob?.salary_max,
-    date_posted:selectedJob?.created
+    min_salary: selectedJob?.salary_min,
+    max_salary: selectedJob?.salary_max,
+    date_posted: selectedJob?.created,
   };
   const handleSave = () => {
-    isJobSaved(newJob)?deleteData(findJobRecordId(newJob)):postData(newJob);
-};
- const debouncedHandleSave = debounce(handleSave,10000)
+    const jobRecordId = findJobRecordId(newJob);
+    console.log(jobRecordId, newJob.id);
+    isJobSaved(newJob) ? deleteData(jobRecordId) : postData(newJob);
+    console.log(newJob);
+  };
+ 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -79,20 +82,13 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
                 </Snippet>
               </PopoverContent>
             </Popover>
-            <Popover onOpenChange={debouncedHandleSave}>
-              <PopoverTrigger>
-                <Button
-                  color={isJobSaved(newJob)?"success":"danger"}
-                  aria-label={isJobSaved(newJob)?"Job Saved!":"Press to Save Job!"}
-                  isIconOnly
-                >
-                  <HeartFilledIcon />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                {loading ? <Spinner color="danger" /> : <pre>{isJobSaved(newJob)?"Job Saved!":"Job Unsaved!"}</pre>}
-              </PopoverContent>
-            </Popover>
+
+            <Button
+              color={isJobSaved(newJob) ? "success" : "danger"}
+              isIconOnly
+              onPress={handleSave}
+            >{!loading&&!loadingDel?<HeartFilledIcon />:<Spinner color="default"/>}
+            </Button>
 
             <Button color="primary" onPress={() => onClose(false)}>
               Close

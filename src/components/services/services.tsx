@@ -110,7 +110,8 @@ export const postDataToAirtable = async (
       },
     }
   );
-  return response.data.id;
+  console.log(response)
+  return response.data.records[0].id;
 };
 
 export const editDataInAirtable = async (
