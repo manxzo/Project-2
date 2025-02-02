@@ -5,10 +5,19 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Snippet,
 } from "@heroui/react";
-import { HeartFilledIcon } from "@/components/icons";
+import { HeartFilledIcon, SearchIcon } from "@/components/icons";
+import { useState } from "react";
 
-const SearchPostingModal = ({ isOpen, onClose, selectedJob}) => {
+const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
+const [favorited,setFavourited] = useState([]);
+const [favorite,setFavourite] = useState(null);
+
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -34,27 +43,21 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob}) => {
           </p>
         </ModalBody>
 
-        <ModalFooter className="flex justify-between items-center">
-          {selectedJob?.redirect_url && (
-            <a
-              href={selectedJob.redirect_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              See Full Posting
-            </a>
-          )}
-
+        <ModalFooter className="flex justify-center items-center">
           <div className="flex gap-2">
-            <Button
-              color="danger"
-              aria-label="Add to Favourites"
-              isIconOnly
-            >
+            <Popover showArrow offset={20} placement="bottom">
+              <PopoverTrigger>
+                <Button color="success" aria-label="Use in Resume" isIconOnly><SearchIcon/></Button>
+              </PopoverTrigger>
+              <PopoverContent>
+               <Snippet ><pre className="whitespace-pre-wrap break-words">{JSON.stringify(selectedJob)}</pre></Snippet>
+              </PopoverContent>
+            </Popover>
+
+            <Button color="danger" aria-label="Add to Favourites" isIconOnly>
               <HeartFilledIcon />
             </Button>
-            <Button color="primary" onPress={()=>onClose(false)}>
+            <Button color="primary" onPress={() => onClose(false)}>
               Close
             </Button>
           </div>

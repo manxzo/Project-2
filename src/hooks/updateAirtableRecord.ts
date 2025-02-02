@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
 
 
-const useUpdateAirtableData = (airtableLabel) => {
+const useUpdateAirtableData = (airtableLabel,recordId, updatedFields) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -13,7 +13,7 @@ const useUpdateAirtableData = (airtableLabel) => {
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
-  const updateData = async (recordId, updatedFields) => {
+  const updateData = async () => {
     if (!airtableBase || !airtableKey || !airtableLabel || !recordId) {
       setError("Missing Airtable credentials, label, or record ID.");
       return;

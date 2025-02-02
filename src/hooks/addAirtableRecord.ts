@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
 
 
-const usePostAirtableData = (airtableLabel) => {
+const usePostAirtableData = (airtableLabel,newRecord) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -13,7 +13,7 @@ const usePostAirtableData = (airtableLabel) => {
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
-  const postData = async (newRecord) => {
+  const postData = async () => {
     if (!airtableBase || !airtableKey || !airtableLabel) {
       setError("Missing Airtable credentials or label.");
       return;
