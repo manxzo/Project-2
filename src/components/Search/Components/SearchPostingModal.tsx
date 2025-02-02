@@ -9,14 +9,32 @@ import {
   PopoverTrigger,
   PopoverContent,
   Snippet,
+  Spinner,
 } from "@heroui/react";
 import { HeartFilledIcon, SearchIcon } from "@/components/icons";
-import { useState } from "react";
+import {  useState } from "react";
 import usePostAirtableData from "@/hooks/addAirtableRecord";
-
+import { ConfigContext } from "@/config";
+import { useContext } from "react";
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
-const {success,loading,error,postData} = usePostAirtableData()
-
+  const context = useContext(ConfigContext);
+  const {config,saveJob,unsaveJob} = context;
+  const { loading, error, postData } = usePostAirtableData("Jobs");
+  const {message} = config;
+    
+  const jobDetails = {
+    title: selectedJob?.title,
+    company: selectedJob?.company?.display_name,
+    description: selectedJob?.description,
+    id: selectedJob?.id,
+    location: selectedJob?.location?.display_name,
+    min_salary:selectedJob?.salary_min,
+    max_salary:selectedJob?.salary_max,
+    date_posted:selectedJob?.created
+  };
+  const handleSave = () => {
+  saveJob(jobDetails);
+  };
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -58,14 +76,21 @@ const {success,loading,error,postData} = usePostAirtableData()
                 </Snippet>
               </PopoverContent>
             </Popover>
+            <Popover onOpenChange={handleFav}>
+              <PopoverTrigger>
                 <Button
                   color="danger"
                   aria-label="Add to Favourites"
-                  onPress={handleFavourite}
                   isIconOnly
                 >
                   <HeartFilledIcon />
                 </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                {loading ? <Spinner color="danger" /> : <pre>${message}</pre>}
+              </PopoverContent>
+            </Popover>
+
             <Button color="primary" onPress={() => onClose(false)}>
               Close
             </Button>
