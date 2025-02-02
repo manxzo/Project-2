@@ -9,7 +9,7 @@ const useDeleteAirtableData = (airtableLabel) => {
   const [success, setSuccess] = useState(false);
 
   const context = useContext(ConfigContext);
-  const { config } = context;
+  const { config ,removeRecord } = context;
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
@@ -25,6 +25,7 @@ const useDeleteAirtableData = (airtableLabel) => {
 
     try {
       await deleteDataFromAirtable(airtableBase, airtableLabel, airtableKey, recordId);
+      removeRecord(recordId);
       setSuccess(true);
     } catch (err) {
       console.error("Error deleting Airtable record:", err.message);
