@@ -18,11 +18,9 @@ import { ConfigContext } from "@/config";
 import { useContext } from "react";
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const context = useContext(ConfigContext);
-  const {config,saveJob,unsaveJob} = context;
   const { loading, error, postData } = usePostAirtableData("Jobs");
-  const {message} = config;
-    
-  const jobDetails = {
+
+  const newJob = {
     title: selectedJob?.title,
     company: selectedJob?.company?.display_name,
     description: selectedJob?.description,
@@ -33,8 +31,8 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
     date_posted:selectedJob?.created
   };
   const handleSave = () => {
-  saveJob(jobDetails);
-  };
+};
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
