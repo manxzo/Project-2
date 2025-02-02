@@ -1,10 +1,13 @@
 import { fetchAiResponse } from "@/components/services/services";
 import { useEffect, useState } from "react";
-
-const useAiResponse = (job,resume,deepseekApiKey) => {
+import { useContext} from "react";
+import { ConfigContext } from "@/config";
+const useAiResponse = (job,resume) => {
   const [response, setResponse] = useState("");
   const [error, setError] = useState(null);
-
+  const context = useContext(ConfigContext);
+  const {config} = context;
+  const deepseekApiKey = config.apiKeys.deepSeekApi;
   useEffect(() => {
     const getResponse = async () => {
       try {

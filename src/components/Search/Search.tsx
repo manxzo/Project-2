@@ -1,18 +1,13 @@
 // @ts-nocheck
-import { useState, useContext } from "react";
-import { ConfigContext } from "@/config";
+import { useState } from "react";
 import SearchFilter from "./Components/SearchFilter";
 import SearchResult from "./Components/SearchResults";
 import useSearchResults from "@/hooks/FetchSearchResults";
 import DefaultLayout from "@/layouts/default";
-import { Pagination,Button } from "@heroui/react";
+import { Pagination, Button } from "@heroui/react";
 import SearchPagination from "./Components/SearchPagination";
 const Search = () => {
-  const context = useContext(ConfigContext);
-  const { config } = context;
-  const { country, apiKeys } = config;
-  const { adzunaApiId, adzunaApiKey } = apiKeys;
-  const [page,setPage] = useState(1);
+  const [page, setPage] = useState(1);
   const [params, setParams] = useState({
     what: "",
     where: "",
@@ -25,30 +20,27 @@ const Search = () => {
   });
   const handleSearch = (newParams) => {
     const entries = Object.entries(newParams);
-    for(const [key,val] of entries){ 
-    setParams((prev)=>({...prev,[key]:val}));
-  }
-  setPage(1);
-};
-  const handlePage = (page) =>{
+    for (const [key, val] of entries) {
+      setParams((prev) => ({ ...prev, [key]: val }));
+    }
+    setPage(1);
+  };
+  const handlePage = (page) => {
     setPage(page);
-  }
-  const { results, resultCount, error } = useSearchResults(
-    params,
-    country,
-    page,
-    adzunaApiId,
-    adzunaApiKey
-  );
+  };
+  const { results, resultCount, error } = useSearchResults(params, page);
   return (
     <DefaultLayout>
-      <SearchFilter  handleSearch={handleSearch} />
+      <SearchFilter handleSearch={handleSearch} />
       <div className="flex-col justify-items-center">
-        <SearchPagination page={page} handlePage={handlePage} resultCount={resultCount} results_per_page={params.results_per_page}/>
-      <SearchResult results={results} resultCount={resultCount}/>
+        <SearchPagination
+          page={page}
+          handlePage={handlePage}
+          resultCount={resultCount}
+          results_per_page={params.results_per_page}
+        />
+        <SearchResult results={results} resultCount={resultCount} />
       </div>
-      
-      
     </DefaultLayout>
   );
 };
