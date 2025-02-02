@@ -2,9 +2,18 @@ import DefaultLayout from "@/layouts/default";
 import ResumeResult from "./Components/ResumeResult";
 import ResumeUploader from "./Components/ResumeUpload";
 import { useState } from "react";
-
+import SearchPostingCard from "../Search/Components/SearchPostingCard";
+import { useContext } from "react";
+import { ConfigContext } from "@/config";
 import useAiResponse from "@/hooks/FetchAIResponse";
 const Resume = () => {
+  const context = useContext(ConfigContext);
+  const { config } = context;
+  const {
+    saved: { jobs },
+  } = config;
+  const jobLastIdx = jobs.length - 1;
+  const recentSaves = jobs.slice(-3, 3);
   const [resume, setResume] = useState("");
   const [job, setJob] = useState();
   const { response, error } = useAiResponse(job, resume);
@@ -33,9 +42,19 @@ const Resume = () => {
             Saved Jobs
           </h2>
           <div className="h-[400px] overflow-y-auto">
-            <p className="text-gray-500 dark:text-gray-400">
-              No saved jobs yet.
-            </p>
+            {recentSaves.length > 0 ? (
+              recentSaves.map((posting) => (
+                <SearchPostingCard
+                  key={posting.id}
+                  posting={posting}
+                  onClick={null}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">
+                No saved jobs yet.
+              </p>
+            )}
           </div>
         </div>
       </div>

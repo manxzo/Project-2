@@ -17,7 +17,7 @@ export const siteConfig = {
       href: "/resume",
     },
     {
-      label: "Favourites",
+      label: "Saved Jobs/Resumes",
       href: "/saved",
     },
     {
