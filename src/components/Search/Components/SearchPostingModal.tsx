@@ -17,7 +17,7 @@ import usePostAirtableData from "@/hooks/addAirtableRecord";
 import { ConfigContext } from "@/config";
 import { useContext } from "react";
 import useDeleteAirtableData from "@/hooks/deleteAirtableRecord";
-
+import debounce from "lodash.debounce";
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const context = useContext(ConfigContext);
   const {isJobSaved,findJobRecordId} = context;
@@ -37,7 +37,7 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const handleSave = () => {
     isJobSaved(newJob)?deleteData(findJobRecordId(newJob)):postData(newJob);
 };
-
+ const debouncedHandleSave = debounce(handleSave,10000)
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -79,7 +79,7 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
                 </Snippet>
               </PopoverContent>
             </Popover>
-            <Popover onOpenChange={handleSave}>
+            <Popover onOpenChange={debouncedHandleSave}>
               <PopoverTrigger>
                 <Button
                   color={isJobSaved(newJob)?"success":"danger"}
