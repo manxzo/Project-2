@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode } from "react";
-import { toast } from "react-toastify";
+
 
 interface Job {
   title: string;

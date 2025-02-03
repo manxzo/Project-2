@@ -9,20 +9,19 @@ import {
   PopoverTrigger,
   PopoverContent,
   Snippet,
-  Spinner,
 } from "@heroui/react";
 import { HeartFilledIcon, SearchIcon } from "@/components/icons";
-import { useState } from "react";
+
 import usePostAirtableData from "@/hooks/addAirtableRecord";
 import { ConfigContext } from "@/config";
 import { useContext } from "react";
 import useDeleteAirtableData from "@/hooks/deleteAirtableRecord";
-
+import { ExternalLink } from "react-external-link";
 const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   const context = useContext(ConfigContext);
   const { isJobSaved, findJobRecordId } = context;
-  const { loading, error, success, postData } = usePostAirtableData("Jobs");
-  const { deleteData,loading:loadingDel } = useDeleteAirtableData("Jobs");
+  const { loading, postData } = usePostAirtableData("Jobs");
+  const { deleteData, loading: loadingDel } = useDeleteAirtableData("Jobs");
 
   const newJob = {
     title: selectedJob?.title,
@@ -36,11 +35,10 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
   };
   const handleSave = () => {
     const jobRecordId = findJobRecordId(newJob);
-    console.log(jobRecordId, newJob.id);
     isJobSaved(newJob) ? deleteData(jobRecordId) : postData(newJob);
-    console.log(newJob);
+  
   };
- 
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -76,9 +74,9 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
               </PopoverTrigger>
               <PopoverContent>
                 <Snippet>
-                  <pre className="whitespace-pre-wrap break-words">
+                  <p className="whitespace-pre-wrap break-words">
                     {JSON.stringify(selectedJob)}
-                  </pre>
+                  </p>
                 </Snippet>
               </PopoverContent>
             </Popover>
@@ -86,12 +84,17 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
             <Button
               color={isJobSaved(newJob) ? "success" : "danger"}
               isIconOnly
+              disabled={loading || loadingDel}
+              isLoading={loading || loadingDel}
               onPress={handleSave}
-            >{!loading&&!loadingDel?<HeartFilledIcon />:<Spinner color="default"/>}
+            >
+              <HeartFilledIcon />
             </Button>
 
-            <Button color="primary" onPress={() => onClose(false)}>
-              Close
+            <Button color="primary">
+              <ExternalLink href={selectedJob?.redirect_url}>
+                Visit Posting
+              </ExternalLink>
             </Button>
           </div>
         </ModalFooter>

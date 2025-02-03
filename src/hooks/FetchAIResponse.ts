@@ -1,46 +1,45 @@
 import { fetchAiResponse } from "@/components/services/services";
 import { useEffect, useState, useContext } from "react";
 import { ConfigContext } from "@/config";
+import { toast } from "react-toastify";
 
-const useAiResponse = (job, resume) => {
+const useAiResponse = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const context = useContext(ConfigContext);
   const { config } = context;
   const deepseekApiKey = config.apiKeys.deepSeekApi;
 
-  useEffect(() => {
+ const fetchAIResult =(job,resume) => {
     if (!job || !resume) {
       setResponse("No Job or Resume Provided");
+      toast.error(response);
       return;
     }
 
-    let isMounted = true; 
-
     const getResponse = async () => {
-      try {
-        setError(null); 
-        const data = await fetchAiResponse(job, resume, deepseekApiKey);
+      setLoading(true);
+      setError(null);
 
-        if (isMounted) {
-          setResponse(data.choices?.[0]?.message?.content || "No response from AI");
-          console.log(data)
-        }
+      try {
+        const data = await fetchAiResponse(job, resume, deepseekApiKey);
+        setResponse(
+          data.choices?.[0]?.message?.content || "No response from AI"
+        );
       } catch (err) {
-        console.error("API Error:", err.message);
-        if (isMounted) setError(err.message);
+        toast.error("API Error:", err);
+        setError(err.message);
+        toast.error(`AI Response Error: ${err.message}`);
       }
+      setLoading(false);
     };
 
     getResponse();
+  };
 
-    return () => {
-      isMounted = false; 
-    };
-  }, [job, resume, deepseekApiKey]);
-
-  return { response, error };
+  return { response, error, loading,fetchAIResult};
 };
 
 export default useAiResponse;

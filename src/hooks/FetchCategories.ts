@@ -1,30 +1,42 @@
 import { fetchCategories } from "@/components/services/services";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ConfigContext } from "@/config";
-import { useContext } from "react";
+import { toast } from "react-toastify";
+
 const useCategories = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const context = useContext(ConfigContext);
-  const {config} = context;
-  const {apiKeys} = config;
-  const {adzunaApiId,adzunaApiKey} = apiKeys;
-  const {country} = config
+  const { config } = context;
+  const { apiKeys, country } = config;
+  const { adzunaApiId, adzunaApiKey } = apiKeys;
+
   useEffect(() => {
+    if (!adzunaApiId || !adzunaApiKey) {
+      setError("Missing API credentials.");
+      toast.error(error);
+      return;
+    }
+
     const loadCategories = async () => {
+      setError(null);
       try {
         const data = await fetchCategories(country, adzunaApiId, adzunaApiKey);
-        setCategories(data.results);
+        setCategories(data.results || []);
       } catch (err) {
-        console.error(err.message);
         setError(err.message);
+        toast.error(`Failed to load categories: ${err.message}`);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadCategories();
   }, [country, adzunaApiId, adzunaApiKey]);
 
-  return { categories, error };
+  return { categories, error};
 };
 
 export default useCategories;
