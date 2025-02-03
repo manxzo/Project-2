@@ -15,7 +15,7 @@ import {
 import useCategories from "@/hooks/FetchCategories";
 import { ConfigContext } from "@/config";
 
-const SearchFilter = ({ handleSearch }) => {
+const SearchFilter = ({ handleSearch, loading }) => {
   const [filter, setFilter] = useState({
     what: "",
     where: "",
@@ -47,10 +47,9 @@ const SearchFilter = ({ handleSearch }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     handleSearch(filter);
-    console.log(JSON.stringify(filter));
   };
   return (
-    <Form onSubmit={handleSubmit} >
+    <Form onSubmit={handleSubmit}>
       <Input
         name="what"
         label="Search Keywords"
@@ -151,7 +150,12 @@ const SearchFilter = ({ handleSearch }) => {
         >
           Sort By: {filter.sort_by === "date" ? "Date" : "Relevance"}
         </Button>
-        <Button color="success" style={{ flex: "auto" }} type="submit">
+        <Button
+          color="success"
+          style={{ flex: "auto" }}
+          type="submit"
+          isLoading={loading}
+        >
           Search
         </Button>
       </div>

@@ -1,6 +1,7 @@
 import { postDataToAirtable } from "@/components/services/services";
 import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
+import { toast } from "react-toastify";
 
 
 const usePostAirtableData = (airtableLabel) => {
@@ -8,12 +9,13 @@ const usePostAirtableData = (airtableLabel) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const context = useContext(ConfigContext);
-  const { config,addJobRecord,addResumeRecord,saveJob,saveResume } = context;
+  const { config,saveJob,saveResume } = context;
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
   const postData = async (newRecord) => {
     if (!airtableBase || !airtableKey || !airtableLabel) {
       setError("Missing Airtable credentials or label.");
+      toast.error(error)
       return;
     }
 
@@ -22,12 +24,10 @@ const usePostAirtableData = (airtableLabel) => {
     setSuccess(false);
     try {
    const recordId =  await postDataToAirtable(airtableBase, airtableLabel, airtableKey, newRecord);
-  
-      airtableLabel==="Jobs"?addJobRecord(newRecord,recordId):addResumeRecord(newRecord,recordId);
-      airtableLabel==="Jobs"?saveJob(newRecord):saveResume(newRecord)
+      airtableLabel==="Jobs"?saveJob(newRecord,recordId):saveResume(newRecord,recordId)
       setSuccess(true);
     } catch (err) {
-      console.error("Error posting to Airtable:", err.message);
+      toast.error("Error posting to Airtable:", err.message);
       setError(err.message);
     } finally {
       setLoading(false);

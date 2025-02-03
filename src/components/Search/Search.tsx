@@ -1,10 +1,8 @@
-// @ts-nocheck
 import { useState } from "react";
 import SearchFilter from "./Components/SearchFilter";
 import SearchResult from "./Components/SearchResults";
 import useSearchResults from "@/hooks/FetchSearchResults";
 import DefaultLayout from "@/layouts/default";
-import { Pagination, Button } from "@heroui/react";
 import SearchPagination from "./Components/SearchPagination";
 const Search = () => {
   const [page, setPage] = useState(1);
@@ -28,11 +26,11 @@ const Search = () => {
   const handlePage = (page) => {
     setPage(page);
   };
-  const { results, resultCount, error } = useSearchResults(params, page);
+  const { results, resultCount,loading } = useSearchResults(params, page);
   return (
     <DefaultLayout>
       <div className="w-full">
-        <SearchFilter handleSearch={handleSearch} />
+        <SearchFilter handleSearch={handleSearch} loading={loading}/>
       <div className="flex-col justify-items-center">
         <SearchPagination
           page={page}
@@ -40,7 +38,7 @@ const Search = () => {
           resultCount={resultCount}
           results_per_page={params.results_per_page}
         />
-        <SearchResult results={results} resultCount={resultCount} />
+        <SearchResult results={results} resultCount={resultCount} loading={loading}/>
       </div>
       </div>
       

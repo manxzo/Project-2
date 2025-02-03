@@ -14,6 +14,7 @@ import {
 import { useEffect, useState, useContext } from "react";
 
 import { ConfigContext } from "@/config";
+import { toast } from "react-toastify";
 
 
 export default function LocationPopup() {
@@ -50,7 +51,7 @@ export default function LocationPopup() {
   const [message, setMessage] = useState("");
   const [selection, setSelection] = useState("");
   const countryCodes = countries.map((country) => country.code);
-
+  const x = 1;
   useEffect(() => {
     const getCountry = async () => {
       try {
@@ -70,16 +71,17 @@ export default function LocationPopup() {
           setMessage(
             `Country not supported:${countryCode.toUpperCase()} - Default set to: SG`
           );
+          toast.error(`Country not supported:${countryCode.toUpperCase()} - Default set to: SG`);
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error);
         setMessage("Could not detect your location. Please select manually.");
         setConfig({ ...config, country: "sg" });
       }
     };
 
     getCountry();
-  }, []);
+  },[]);
   const handleChange = (event) => {
     setSelection(event.target.value);
   };

@@ -1,21 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { fetchSearchResults } from "@/components/services/services";
 import { ConfigContext } from "@/config";
-import { useContext } from "react";
+import { toast } from "react-toastify";
 
 const useSearchResults = (params, page) => {
   const [results, setResults] = useState([]);
   const [resultCount, setResultCount] = useState(0);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const context = useContext(ConfigContext);
   const { config } = context;
-  const { apiKeys } = config;
+  const { apiKeys, country } = config;
   const { adzunaApiId, adzunaApiKey } = apiKeys;
-  const { country } = config;
+
   useEffect(() => {
-    if (!params) return;
+    if (!params || !adzunaApiId || !adzunaApiKey) return;
 
     const loadResults = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const data = await fetchSearchResults(
           params,
@@ -24,17 +27,21 @@ const useSearchResults = (params, page) => {
           adzunaApiId,
           adzunaApiKey
         );
-        setResults(data.results);
-        setResultCount(data.count);
+        setResults(data.results || []);
+        setResultCount(data.count || 0);
       } catch (err) {
-        console.error(err.message);
+        toast.error("Error fetching search results:", err);
         setError(err.message);
+        toast.error(`Search failed: ${err.message}`);
+      } finally {
+        setLoading(false);
       }
     };
+
     loadResults();
   }, [params, country, page, adzunaApiId, adzunaApiKey]);
-  console.log(JSON.stringify(results));
-  return { results, resultCount, error };
+
+  return { results, resultCount, error, loading };
 };
 
 export default useSearchResults;

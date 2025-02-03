@@ -86,11 +86,23 @@ export const fetchAirtableData = async (
   airtableLabel,
   airtableApiKey
 ) => {
-  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
-  const response = await axios.get(url, {
-    headers: { Authorization: `Bearer ${airtableApiKey}` },
-  });
-  return response.data.records;
+  try {
+    const url = `https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${airtableApiKey}` },
+    });
+
+    return response.data.records
+      .filter((record) => record.fields && record.id)
+      .map((record) => ({
+        ...record.fields,
+        id: record.fields?.id,
+        recordId: record.id,
+      }));
+  } catch (error) {
+    console.error(`Airtable fetch error (${airtableLabel}):`, error.message);
+    throw new Error(`Failed to fetch ${airtableLabel} data`);
+  }
 };
 
 export const postDataToAirtable = async (
@@ -110,7 +122,7 @@ export const postDataToAirtable = async (
       },
     }
   );
-  console.log(response)
+  
   return response.data.records[0].id;
 };
 

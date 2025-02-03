@@ -1,42 +1,56 @@
 import { fetchAirtableData } from "@/components/services/services";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
+import { toast } from "react-toastify";
 
-
-const useGetAirtableData = (airtableLabel) => {
-  const [data, setData] = useState([]); 
+const useGetAirtableData = () => {
+  const [data, setData] = useState({ jobs: [], resumes: [] });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const context = useContext(ConfigContext);
-  const { config,syncData } = context;
+  const { config, syncData } = useContext(ConfigContext);
   const { apiKeys } = config;
   const { airtableBase, airtableKey } = apiKeys;
 
-  useEffect(() => {
-    if (!airtableBase || !airtableKey || !airtableLabel) {
-      setError("Missing Airtable credentials or label.");
+  const fetchAndSyncData = async () => {
+    if (!airtableBase || !airtableKey) {
+      setError("Missing Airtable credentials.");
+      toast.error(error);
       return;
     }
 
-    const loadData = async () => {
-      try {
-        const fetchedData = await fetchAirtableData(
-          airtableBase,
-          airtableLabel,
-          airtableKey
-        );
-        setData(fetchedData.records);
-        syncData(airtableLabel,fetchedData.records);
-      } catch (err) {
-        console.error("Error fetching Airtable data:", err.message);
-        setError(err.message);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const [jobsData, resumesData] = await Promise.all([
+        fetchAirtableData(airtableBase, "Jobs", airtableKey),
+        fetchAirtableData(airtableBase, "Resumes", airtableKey),
+      ]);
+
+      if (!jobsData.every((job) => job.id)) {
+        toast.error("Some Jobs are missing an 'id' field.");
+        throw new Error("Some Jobs are missing an 'id' field.");
       }
-    };
+      if (!resumesData.every((resume) => resume.id)) {
+        toast.error("Some Resumes are missing an 'id' field.");
+        throw new Error("Some Resumes are missing an 'id' field.");
+      }
 
-    loadData();
-  }, [airtableBase, airtableKey, airtableLabel]); 
+      await syncData("Jobs", jobsData);
+      await syncData("Resumes", resumesData);
+      toast.success("Data Synced!");
+      toast.error(jobsData);
+      setData({ jobs: jobsData, resumes: resumesData });
+    } catch (err) {
+      toast.error("Error fetching Airtable data:", err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { data, error };
+  return { data, error, loading, fetchAndSyncData };
 };
 
-export default useGetAirtableData; 
+export default useGetAirtableData;
