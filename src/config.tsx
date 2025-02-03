@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode } from "react";
+import { toast } from "react-toastify";
 
 interface Job {
   title: string;
@@ -41,18 +42,15 @@ interface Config {
 interface ConfigContextType {
   config: Config;
   setConfig: React.Dispatch<React.SetStateAction<Config>>;
-  saveJob: (job: Job) => void;
-  unsaveJob: (job: Job) => void;
-  saveResume: (resume: Resume) => void;
-  unsaveResume: (resume: Resume) => void;
+  saveJob: (job: Job,recordId:string) => void;
+  saveResume: (resume: Resume,recordId:string) => void;
   isJobSaved: (job: Job) => boolean;
   isResumeSaved: (resume: Resume) => boolean;
   findJobRecordId: (Job: Job) => string;
   findResumeRecordId: (Resume: Resume) => string;
-  addJobRecord: (job: Job, recordId: string) => void;
-  addResumeRecord: (resume: Resume, recordId: string) => void;
   removeRecord: (recordId: string) => void;
   syncData:(label:string,records:any)=> void;
+  findRelatedResumes:(recordId:string)=>string[];
 }
 
 export const ConfigContext = createContext<ConfigContextType | undefined>(
@@ -77,32 +75,27 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     records: [],
   });
 
-  const saveJob = (job: Job) => {
+  const saveJob = (job: Job,recordId:string) => {
+    const newRecord = {recordId:recordId,id:job.id,label:"Jobs"}
     setConfig((prev) => {
       const isSaved = prev.saved.jobs.some((favJob) => favJob.id === job.id);
       if (!isSaved) {
         return {
           ...prev,
+          records:[...prev.records,newRecord],
           saved: {
             ...prev.saved,
             jobs: [...prev.saved.jobs, job],
-          },
-        };
+          }, 
+        }
       }
 
       return prev;
     });
   };
-  const unsaveJob = (jobRmv: Job) => {
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      saved: {
-        ...prevConfig.saved,
-        jobs: prevConfig.saved.jobs.filter((job) => job.id !== jobRmv.id),
-      },
-    }));
-  };
-  const saveResume = (resume: Resume) => {
+
+  const saveResume = (resume: Resume,recordId:string) => {
+    const newRecord = {recordId:recordId,id:resume.id,label:"Resumes"}
     setConfig((prev) => {
       const isSaved = prev.saved.resumes.some(
         (savedResume) => savedResume.id === resume.id
@@ -111,6 +104,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       if (!isSaved) {
         return {
           ...prev,
+          records:[...prev.records,newRecord],
           saved: {
             ...prev.saved,
             resumes: [...prev.saved.resumes, resume],
@@ -121,17 +115,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       return prev;
     });
   };
-  const unsaveResume = (resumeRmv: Resume) => {
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      saved: {
-        ...prevConfig.saved,
-        resumes: prevConfig.saved.resumes.filter(
-          (resume) => resume.id !== resumeRmv.id
-        ),
-      },
-    }));
-  };
+
 
   const isJobSaved = (job: Job) => {
     const isSaved = config.saved.jobs.some(
@@ -146,70 +130,95 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     return isSaved;
   };
   const findJobRecordId = (job: Job) => {
+
+  
     const findRecord = config.records.find(
       (record) => record.label === "Jobs" && record.id === job.id
     );
-    return findRecord ? findRecord.recordId : "";
+  
+
+  
+    return findRecord ? findRecord.recordId : null;
   };
+  
   const findResumeRecordId = (resume: Resume) => {
     const findRecord = config.records.find(
       (record) => record.label === "Resumes" && record.id === resume.id
     );
     return findRecord ? findRecord.recordId : "";
   };
-  
-  const addJobRecord = (job: Job, recordId: string) => {
-    const newRecord = { id: job.id, recordId: recordId, label: "Jobs" };
-    setConfig((prev) => ({ ...prev, records: [...prev.records, newRecord] }));
-  };
-  const addResumeRecord = (resume: Resume, recordId: string) => {
-    const newRecord = { id: resume.id, recordId: recordId, label: "Resumes" };
-    setConfig((prev) => ({ ...prev, records: [...prev.records, newRecord] }));
-  };
-  const removeRecord = (recordId: string) => {
+  const findRelatedResumes = (recordId: string) => {
     const recordToRemove = config.records.find((record) => record.recordId === recordId);
-    if (!recordToRemove) return;
+    
+    if (!recordToRemove) {
+      return [];
+    }
+    const resumesToRemove = config.saved.resumes.filter((resume) => resume.job_id === recordToRemove.id);
+    return resumesToRemove.map((resume) => findResumeRecordId(resume));
+  };
   
+  const removeRecord = (recordId: string) => {
+   const recordToRemove = config.records.find((record) => record.recordId === recordId);
+    if (!recordToRemove) return;
     setConfig((prev) => ({
       ...prev,
       records: prev.records.filter((record) => record.recordId !== recordId),
       saved: {
         ...prev.saved,
         jobs: recordToRemove.label === "Jobs"
-          ? prev.saved.jobs.filter((job) => job.id !== recordToRemove.id)
+          ? prev.saved.jobs.filter((job) => job.id !== recordToRemove.id) 
           : prev.saved.jobs,
         resumes: recordToRemove.label === "Resumes"
           ? prev.saved.resumes.filter((resume) => resume.id !== recordToRemove.id)
-          : prev.saved.resumes,
+          : prev.saved.resumes.filter((resume)=> resume.job_id !== recordToRemove.id),
       },
     }));
   };
-  const syncData = (label,records)=>{
-    const newData = records.map((record)=>record.fields)
-    if(label==="Jobs"){
-      setConfig((prev)=>({...prev,...prev.saved,jobs:newData}))
-    }
-    if(label==="Resumes"){
-      setConfig((prev)=>({...prev,...prev.saved,resumes:newData}))
-    }
-  }
+  const syncData = (label: string, records: any[]) => {
+
+    const newConfigArray = records.map(({ recordId, ...rest }) => ({ ...rest }));
+  
+    const newRecords = records.map((record) => ({
+      id: record.id,
+      label: label,
+      recordId: record.recordId,
+    }));
+  
+    setConfig((prev) => {
+      const mergedRecords = [...prev.records, ...newRecords].filter(
+        (record, index, self) =>
+          index === self.findIndex((r) => r.recordId === record.recordId) 
+      );
+      const updatedConfig = {
+        ...prev,
+        saved: {
+          ...prev.saved,
+          ...(label === "Jobs"
+            ? { jobs: [...prev.saved.jobs, ...newConfigArray] }
+            : { resumes: [...prev.saved.resumes, ...newConfigArray] }),
+        },
+        records: mergedRecords, 
+      };
+
+      return updatedConfig;
+    });
+  };
+  
+  
   return (
     <ConfigContext.Provider
       value={{
         config,
         setConfig,
         saveJob,
-        unsaveJob,
         saveResume,
-        unsaveResume,
         isJobSaved,
         isResumeSaved,
         findJobRecordId,
         findResumeRecordId,
-        addJobRecord,
-        addResumeRecord,
         removeRecord,
-        syncData
+        syncData,
+        findRelatedResumes
       }}
     >
       {children}
