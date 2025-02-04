@@ -47,8 +47,9 @@ const Resume = ({job,setJob}) => {
   };
   return (
     <DefaultLayout>
-      <div className="flex flex-col lg:flex-row h-screen w-full p-6 gap-6 bg-gray-100 dark:bg-gray-900">
+      <div className="flex flex-col lg:flex-row h-screen w-full p-6 gap-6 bg-gray-100 dark:bg-gray-900 text-center">
         <div className="flex flex-col w-full lg:w-2/3 h-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        
           <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
             Upload or Write Resume
           </h2>
@@ -59,20 +60,27 @@ const Resume = ({job,setJob}) => {
           />
 
           <div className="mt-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-black-800 dark:text-white mb-4">
+            <div className="flex items-center  w-full gap-5 text-center">
+              <div className="justify-items-center flex-auto">
+                 <h2 className="text-xl font-bold text-black-800 dark:text-white mb-4 ">
                 AI Optimized Resume
               </h2>
-              <div className="flex-col text-center">
-                <Button
+              </div>
+             
+              <div className="flex-col  justify-items-end flex-shrink">
+                <div>
+                  <Button
                   color="danger"
                   onPress={() => handleSave()}
                   isLoading={loadingSave}
                   isIconOnly
+              
                 >
                   <HeartFilledIcon />
                 </Button>
                 <h2 >Save Result!</h2>
+                </div>
+                
               </div>
             </div>
 

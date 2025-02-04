@@ -43,7 +43,7 @@ interface ConfigContextType {
   config: Config;
   setConfig: React.Dispatch<React.SetStateAction<Config>>;
   setApiKeys: (apiKeys: apiKeys) => void;
-  resetToEnvApiKeys: () => void;
+  resetToEnvApiKeys: () => apiKeys;
   saveJob: (job: Job, recordId: string) => void;
   saveResume: (resume: Resume, recordId: string) => void;
   isJobSaved: (job: Job) => boolean;
@@ -228,6 +228,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
         airtableBase: import.meta.env.VITE_APP_AIRTABLE_BASE,
       },
     }));
+    return config.apiKeys;
   };
 
   return (

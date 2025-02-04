@@ -111,7 +111,7 @@ export const postDataToAirtable = async (
   airtableApiKey,
   newRecord
 ) => {
-  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
+  const url = `https://api.airtable.com/v0/${airtableBase}/${airtableLabel}`;
   const response = await axios.post(
     url,
     { records: [{ fields: newRecord }] },
@@ -133,7 +133,7 @@ export const editDataInAirtable = async (
   recordId,
   updatedFields
 ) => {
-  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
+  const url = `https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
   const response = await axios.patch(
     url,
     { fields: updatedFields },
@@ -153,7 +153,7 @@ export const deleteDataFromAirtable = async (
   airtableApiKey,
   recordId
 ) => {
-  const url = `https://thingproxy.freeboard.io/fetch/https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
+  const url = `https://api.airtable.com/v0/${airtableBase}/${airtableLabel}/${recordId}`;
   const response = await axios.delete(url, {
     headers: { Authorization: `Bearer ${airtableApiKey}` },
   });

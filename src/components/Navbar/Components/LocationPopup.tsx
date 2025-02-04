@@ -93,8 +93,8 @@ export default function LocationPopup() {
     setMessage(`Country Set to:${config.country}`);
   };
   return (
-    <>
-      <Button onPress={onOpen}>Country:{country.toUpperCase()}</Button>
+    <div>
+      <Button onPress={onOpen} variant="faded">Country:{country.toUpperCase()}</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -125,6 +125,6 @@ export default function LocationPopup() {
           )}
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
