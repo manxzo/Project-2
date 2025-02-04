@@ -1,5 +1,5 @@
 import { fetchAiResponse } from "@/components/services/services";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { ConfigContext } from "@/config";
 import { toast } from "react-toastify";
 

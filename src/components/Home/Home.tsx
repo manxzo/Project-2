@@ -1,6 +1,6 @@
-import React from "react";
+
 import DefaultLayout from "@/layouts/default";
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@heroui/react";
+import { Card, CardHeader, CardBody,  Button } from "@heroui/react";
 import  { EditIcon, HeartFilledIcon, JobIcon, SearchIcon } from "../icons";
 import { useNavigate } from "react-router-dom";
 export default function HomePage() {

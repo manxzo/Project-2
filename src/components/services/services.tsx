@@ -23,7 +23,7 @@ export const fetchSearchResults = async (
   const url = `${AdzunaURL}/${country}/search/${page}`;
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(
-      ([key, value]) =>
+      ([_, value]) =>
         value !== "" && value !== 0 && value !== null && value[0] !== false
     )
   );

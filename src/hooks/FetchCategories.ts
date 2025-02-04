@@ -36,7 +36,7 @@ const useCategories = () => {
     loadCategories();
   }, [country, adzunaApiId, adzunaApiKey]);
 
-  return { categories, error};
+  return { categories, error,loading};
 };
 
 export default useCategories;

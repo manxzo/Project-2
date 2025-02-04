@@ -51,7 +51,7 @@ export default function LocationPopup() {
   const [message, setMessage] = useState("");
   const [selection, setSelection] = useState("");
   const countryCodes = countries.map((country) => country.code);
-  const x = 1;
+
   useEffect(() => {
     const getCountry = async () => {
       try {
