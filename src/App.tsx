@@ -6,13 +6,12 @@ import Saved from "./components/Saved/Saved";
 import Home from "./components/Home/Home";
 import useGetAirtableData from "./hooks/fetchAirtableData";
 import { useEffect, useState } from "react";
-import { fetchAirtableData } from "./components/services/services";
 function App() {
-  const{fetchAndSyncData}= fetchAirtableData
+  const{fetchAndSyncData}=useGetAirtableData() ; 
   const[job,setJob]=useState()
 useEffect(()=> {
   fetchAndSyncData();
-),[])
+},[])
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home"/>}/>
