@@ -14,6 +14,7 @@ import {
 } from "@heroui/react";
 import useCategories from "@/hooks/FetchCategories";
 import { ConfigContext } from "@/config";
+import { SearchIcon } from "@/components/icons";
 
 const SearchFilter = ({ handleSearch, loading }) => {
   const [filter, setFilter] = useState({
@@ -60,6 +61,7 @@ const SearchFilter = ({ handleSearch, loading }) => {
         aria-label="Category"
         onChange={handleInputChange}
         name="category"
+        placeholder="Categories"
       >
         {categories.map((category) => {
           if (category.tag === "unknown") return null;
@@ -71,11 +73,11 @@ const SearchFilter = ({ handleSearch, loading }) => {
         })}
       </Select>
       <div className="flex gap-2 mb-4" style={{ marginBottom: "0px" }}>
-        {Object.entries(filter).map(([key, value]) => {
+        {Object.entries(filter).map(([key, value],index) => {
           if (!value || key === "what" || key === "category") return null;
           if (key === "max_days_old" && value == 0)
             return (
-              <Chip key={key} variant="flat">
+              <Chip key={key} variant="shadow" color={index%2?"secondary":"danger"}>
                 All Postings
               </Chip>
             );
@@ -83,12 +85,12 @@ const SearchFilter = ({ handleSearch, loading }) => {
             return null;
           if ((key === "part_time" || key === "full_time") && value === 1)
             return (
-              <Chip key={key} variant="flat">
+              <Chip key={key} variant="shadow" color={index%2?"secondary":"danger"}>
                 {key} included
               </Chip>
             );
           return (
-            <Chip key={key} variant="flat">
+            <Chip key={key} variant="shadow" color={index%2?"secondary":"warning"}>
               {key}: {value.toString()}
             </Chip>
           );
@@ -152,11 +154,11 @@ const SearchFilter = ({ handleSearch, loading }) => {
         </Button>
         <Button
           color="success"
-          style={{ flex: "auto" }}
+          style={{ flex: "auto", fontSize:"1.4em" }}
           type="submit"
           isLoading={loading}
         >
-          Search
+          Search<SearchIcon className="w-5 h-5"/>
         </Button>
       </div>
     </Form>

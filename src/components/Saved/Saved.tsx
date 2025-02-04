@@ -107,10 +107,8 @@ export default function Saved({ setJob }) {
 
   return (
     <DefaultLayout>
-      <div className="w-full">
-        <Button color="warning" onPress={fetchAndSyncData} isLoading={loading}>
-          Sync Data With Cloud
-        </Button>
+      <div className="w-full flex-col ">
+       
         <Divider className="m-2" />
         <Table aria-label="Saved Jobs">
           <TableHeader columns={columns}>
@@ -132,6 +130,9 @@ export default function Saved({ setJob }) {
           </TableBody>
         </Table>
         <SavedResume jobs={jobs} resumes={resumes} />
+        <Button color="warning" onPress={fetchAndSyncData} isLoading={loading} className="mt-5"> 
+          Sync Data With Cloud
+        </Button>
       </div>
     </DefaultLayout>
   );
