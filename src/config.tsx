@@ -1,5 +1,12 @@
 import React, { createContext, useState, ReactNode } from "react";
-
+interface apiKeys {
+    ipInfoKey: string,
+    deepSeekApi: string,
+    adzunaApiId: string,
+    adzunaApiKey: string,
+    airtableKey: string,
+    airtableBase: string
+}
 
 interface Job {
   title: string;
@@ -23,14 +30,7 @@ interface Record {
 }
 
 interface Config {
-  apiKeys: {
-    ipInfoKey: string;
-    deepSeekApi: string;
-    adzunaApiId: string;
-    adzunaApiKey: string;
-    airtableKey: string;
-    airtableBase: string;
-  };
+  apiKeys: apiKeys;
   country: string;
   saved: {
     resumes: Resume[];
@@ -42,6 +42,8 @@ interface Config {
 interface ConfigContextType {
   config: Config;
   setConfig: React.Dispatch<React.SetStateAction<Config>>;
+  setApiKeys:(apiKeys:Object)=> void;
+  resetToEnvApiKeys:()=>void;
   saveJob: (job: Job,recordId:string) => void;
   saveResume: (resume: Resume,recordId:string) => void;
   isJobSaved: (job: Job) => boolean;
@@ -74,6 +76,9 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     },
     records: [],
   });
+
+
+
 
   const saveJob = (job: Job,recordId:string) => {
     const newRecord = {recordId:recordId,id:job.id,label:"Jobs"}
@@ -203,6 +208,19 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       return updatedConfig;
     });
   };
+  const setApiKeys = (apiKeys:apiKeys)=>{
+  setConfig((prev)=>({...prev,apiKeys:apiKeys}));
+   }
+  const resetToEnvApiKeys = ()=>{
+    setConfig((prev)=>({...prev,apiKeys:{
+        ipInfoKey: import.meta.env.VITE_APP_IPINFO_TOKEN,
+        deepSeekApi: import.meta.env.VITE_APP_DEEPSEEK_KEY,
+        adzunaApiId: import.meta.env.VITE_APP_ADZUNA_ID,
+        adzunaApiKey: import.meta.env.VITE_APP_ADZUNA_KEY,
+        airtableKey: import.meta.env.VITE_APP_AIRTABLE_KEY,
+        airtableBase: import.meta.env.VITE_APP_AIRTABLE_BASE,
+      }}))
+  }
   
   
   return (
