@@ -6,6 +6,7 @@ import Saved from "./components/Saved/Saved";
 import Home from "./components/Home/Home";
 import useGetAirtableData from "./hooks/fetchAirtableData";
 import { useEffect, useState } from "react";
+import Settings from "./components/Settings/Settings";
 function App() {
   const{fetchAndSyncData}=useGetAirtableData() ; 
   const[job,setJob]=useState()
@@ -19,6 +20,7 @@ useEffect(()=> {
       <Route path="/search" element={<Search />} />
       <Route path="/resume" element={<Resume job={job} setJob={setJob}/>}/>
       <Route path="/saved" element={<Saved setJob={setJob}/>}/>
+      <Route path="/settings" element={<Settings/>}/>
     </Routes>
   );
 }
