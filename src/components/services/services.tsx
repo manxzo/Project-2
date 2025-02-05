@@ -55,16 +55,13 @@ Your role is to **rewrite and enhance resumes** to increase their chances of pas
 ---
 
 ### **Instructions:**
-1. **Debugging Mode (If Resume Starts with *TEST*):**
-   - If the resume starts with "*TEST*", **follow the exact instructions** given in the resume.  
-   - Your role is to help debug the process by executing all steps accurately **without making assumptions**.
 
-2. **Job Posting Extraction & Analysis:**
+1. **Job Posting Extraction & Analysis:**
    - If a **job posting URL** is provided, extract **all relevant job details** from the page.  
    - Identify key **skills, technologies, and important keywords** required for the job.  
    - If the job link is inaccessible, rely on the provided job description.
 
-3. **Resume Optimization:**
+2. **Resume Optimization:**
    - Naturally integrate **essential keywords & skills** from the job posting into the resume **without keyword stuffing**.
    - Improve **job titles, descriptions, and bullet points** to better align with the job posting.
    - Use **action verbs** and quantify achievements where possible.
@@ -89,7 +86,6 @@ ${resume}
 1. **Optimized Resume** (Plain text, ready for ATS submission).
 2. **List of Added & Improved ATS Keywords**.
 3. **Full Job Info Extracted from the Provided Link** (if available).
-4. **Debugging/Test Response** (only if resume starts with *TEST*).
 `,
         },
       ],
