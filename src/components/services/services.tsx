@@ -45,28 +45,52 @@ export const fetchAiResponse = async (job, resume, deepseekApiKey) => {
   const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      model: "microsoft/phi-4",
+      model: "google/gemini-pro",
       messages: [
         {
           role: "user",
-          content: `You are an expert in Applicant Tracking Systems (ATS) and resume optimization. 
-          Your task is to rewrite and enhance a resume to increase its chances of passing ATS filters by incorporating relevant keywords, skills, and formatting best practices.
-          ### Instructions:
-          - Extract important skills, technologies, and keywords from the job posting.
-          - Naturally integrate these keywords into the resume without keyword stuffing.
-          - Ensure the resume follows ATS-friendly formatting (no tables, images, or fancy formatting).
-          - Use action verbs and quantify achievements where possible.
-          - Improve job titles, descriptions, and bullet points to align with the job posting.
+          content: `You are an **expert in Applicant Tracking Systems (ATS) and resume optimization**. 
+Your role is to **rewrite and enhance resumes** to increase their chances of passing ATS filters by integrating relevant keywords, skills, and formatting best practices.
 
-          ### Job Posting:
-          ${job}
+---
 
-          ### Candidate Resume:
-          ${resume}
+### **Instructions:**
+1. **Debugging Mode (If Resume Starts with *TEST*):**
+   - If the resume starts with "*TEST*", **follow the exact instructions** given in the resume.  
+   - Your role is to help debug the process by executing all steps accurately **without making assumptions**.
 
-          ### Output Format:
-          1. **Optimized Resume:** (Plain text, ready for ATS submission)
-          2. **List of Added/Improved ATS Keywords**`,
+2. **Job Posting Extraction & Analysis:**
+   - If a **job posting URL** is provided, extract **all relevant job details** from the page.  
+   - Identify key **skills, technologies, and important keywords** required for the job.  
+   - If the job link is inaccessible, rely on the provided job description.
+
+3. **Resume Optimization:**
+   - Naturally integrate **essential keywords & skills** from the job posting into the resume **without keyword stuffing**.
+   - Improve **job titles, descriptions, and bullet points** to better align with the job posting.
+   - Use **action verbs** and quantify achievements where possible.
+   - Ensure **ATS-friendly formatting** (no tables, images, columns, or special formatting).
+   - Rewrite the resume to **emphasize relevant experiences** and make it **more compelling**.
+
+---
+
+### **Input Data:**
+#### **Job Posting:**
+${JSON.stringify(job)}
+
+#### **Job URL:** 
+${job.link}
+
+#### **Candidate Resume:**
+${resume}
+
+---
+
+### **Output Format:**
+1. **Optimized Resume** (Plain text, ready for ATS submission).
+2. **List of Added & Improved ATS Keywords**.
+3. **Full Job Info Extracted from the Provided Link** (if available).
+4. **Debugging/Test Response** (only if resume starts with *TEST*).
+`,
         },
       ],
     },
@@ -122,7 +146,7 @@ export const postDataToAirtable = async (
       },
     }
   );
-  
+
   return response.data.records[0].id;
 };
 

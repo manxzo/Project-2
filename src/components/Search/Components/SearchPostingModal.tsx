@@ -32,11 +32,11 @@ const SearchPostingModal = ({ isOpen, onClose, selectedJob }) => {
     min_salary: selectedJob?.salary_min,
     max_salary: selectedJob?.salary_max,
     date_posted: selectedJob?.created,
+    link: selectedJob?.redirect_url,
   };
   const handleSave = () => {
     const jobRecordId = findJobRecordId(newJob);
     isJobSaved(newJob) ? deleteData(jobRecordId) : postData(newJob);
-  
   };
 
   return (
