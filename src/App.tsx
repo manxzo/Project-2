@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Search from "./components/Search/Search";
-import DefaultLayout from "./layouts/default";
 import Resume from "./components/Resume/Resume";
 import Saved from "./components/Saved/Saved";
 import Home from "./components/Home/Home";
