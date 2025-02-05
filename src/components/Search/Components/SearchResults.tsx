@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { Card, Spinner } from "@heroui/react";
+
+import { Spinner } from "@heroui/react";
 import { useState } from "react";
 import SearchPostingCard from "./SearchPostingCard";
 import SearchPostingModal from "./SearchPostingModal";

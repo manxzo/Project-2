@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 const useCategories = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   const context = useContext(ConfigContext);
   const { config } = context;

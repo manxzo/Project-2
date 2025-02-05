@@ -184,35 +184,39 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
   const syncData = (label: string, records: any[]) => {
-    const newConfigArray = records.map(({ recordId, ...rest }) => ({
-      ...rest,
-    }));
-
-    const newRecords = records.map((record) => ({
-      id: record.id,
-      label: label,
-      recordId: record.recordId,
-    }));
-
     setConfig((prev) => {
-      const mergedRecords = [...prev.records, ...newRecords].filter(
-        (record, index, self) =>
-          index === self.findIndex((r) => r.recordId === record.recordId)
-      );
-      const updatedConfig = {
+      const existingRecordIds = new Set(prev.records.map((r) => r.recordId));
+  
+      const newRecords = records
+        .filter((record) => !existingRecordIds.has(record.recordId)) // Prevent duplicates
+        .map(({ recordId, ...rest }) => ({
+          ...rest,
+        }));
+  
+      const updatedRecords = [
+        ...prev.records,
+        ...records
+          .filter((record) => !existingRecordIds.has(record.recordId)) // Prevent duplicates
+          .map((record) => ({
+            id: record.id,
+            label: label,
+            recordId: record.recordId,
+          })),
+      ];
+  
+      return {
         ...prev,
         saved: {
           ...prev.saved,
           ...(label === "Jobs"
-            ? { jobs: [...prev.saved.jobs, ...newConfigArray] }
-            : { resumes: [...prev.saved.resumes, ...newConfigArray] }),
+            ? { jobs: [...prev.saved.jobs, ...newRecords] }
+            : { resumes: [...prev.saved.resumes, ...newRecords] }),
         },
-        records: mergedRecords,
+        records: updatedRecords,
       };
-
-      return updatedConfig;
     });
   };
+  
   const setApiKeys = (apiKeys: apiKeys) => {
     setConfig((prev) => ({ ...prev, apiKeys: apiKeys }));
   };

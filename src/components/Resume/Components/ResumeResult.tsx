@@ -5,7 +5,7 @@ const ResumeResult = ({ response, error }) => {
   const result = response? response.toString():"No Response";
 
   return (
-    <Snippet color={result ? "default" : "danger"} className="w-full h-auto  border overflow-auto   rounded-md ">
+    <Snippet color={result ? "default" : "danger"} className="w-full h-auto  border overflow-auto text-left   rounded-md ">
       <pre className="whitespace-pre-wrap break-words">{result ? result : errorMsg}</pre>
     </Snippet>
   );

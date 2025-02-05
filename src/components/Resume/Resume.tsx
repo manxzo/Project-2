@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import DefaultLayout from "@/layouts/default";
 import ResumeResult from "./Components/ResumeResult";
 import ResumeUploader from "./Components/ResumeUpload";

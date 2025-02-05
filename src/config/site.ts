@@ -34,6 +34,6 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/manxzo",
+    github: "https://github.com/manxzo/Project-2-AI-Resume-Tool",
   },
 };
